@@ -32,6 +32,10 @@ spec:
       containers:
         - image: example:v0.4
           name: convert
+          args:
+            - --tls-cert-file=/etc/webhook/cert/tls.crt
+            - --tls-private-key-file=/etc/webhook/cert/tls.key
+            - --port=9443
           volumeMounts:
             - name: ca
               mountPath: "/etc/webhook/cert"

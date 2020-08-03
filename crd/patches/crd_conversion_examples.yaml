@@ -1,0 +1,27 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: examples.core.oam.dev
+spec:
+  versions:
+    - name: v1alpha2
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            host:
+              type: string
+            port:
+              type: string
+  conversion:
+    strategy: Webhook
+    webhook:
+      conversionReviewVersions: ["v1alpha1","v1alpha2","v1beta1"]
+      clientConfig:
+        service:
+          namespace: default
+          name: oam-crd-conversion
+          path: /exampleconvert
+        caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM1ekNDQWMrZ0F3SUJBZ0lCQVRBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwdGFXNXAKYTNWaVpVTkJNQjRYRFRJd01EWXlPVEF4TlRrME0xb1hEVE13TURZeU9EQXhOVGswTTFvd0ZURVRNQkVHQTFVRQpBeE1LYldsdWFXdDFZbVZEUVRDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTkJVCk96YjJyT2ZNR1VVazMvV21ibDZyVzJjN2NmQ3JxOG16bU9tdmRHYWhkQk9UTlE3OEFYY3VRQTduck9xN3VMUzEKb3pzSkNMZ3l3b2hOTHFGQVg5UC9xZ3ZSdlpoNWo0UjFEWHNreis5bE5XY1BSYTQ3M29ISUZLMlQ2eGVFalUzOQpKdnB4dGduVHpXWlJiVTgzZnBXYVJTc0NsOUhGaCtHY3M4SGtlWFJiaWQ3c3NWUXUrTi9STWJ6aEE0YkRsTlkyCkhFOC9JYzc0RlMvTVhTUGxRZDVkWTNjZ3daYzF2LytjcmJJbXUveE0zNmpnR1hMdXYxS3g0RWsrQ3hzS3paaTQKWkFvaWI5UmUyTGNlcFp2cllXQ2YvVWJsdThHZkl0Zmx1ZWtqeC9KbHgzSm1qNkdiR3BLT3JmSldzMXhldzNKQwpYNGZ5enFkUzd3aTJoRk5WTzE4Q0F3RUFBYU5DTUVBd0RnWURWUjBQQVFIL0JBUURBZ0trTUIwR0ExVWRKUVFXCk1CUUdDQ3NHQVFVRkJ3TUNCZ2dyQmdFRkJRY0RBVEFQQmdOVkhSTUJBZjhFQlRBREFRSC9NQTBHQ1NxR1NJYjMKRFFFQkN3VUFBNElCQVFCemlkRnBYMGgvb1BGMXZvOVR1NWV3VFhUbk1xdmd5djRaMWIzaEtLcDNUMndnQ01zSQp2cUF6M1IwNnQ2MFRyNnZ6OW1CRm93WHp5akc4Q21scTNwUGZ2WFhiOE50d3EzZkVPOU1iUE5nVUIxQUEzR0w5CnhYaDFHdGdXbWx2cGp2THJmU2JrTExsTjZTekFpNUJhbUxrRzlVODNGU1F2REw3c2EwazlMd01TaXlybkNNUGgKT0hLdXpFOUtSSUZZT3YydHA2bC93c1J3WWdpK0lrOWdRVU4vanZzS3FZbzVhV0sweG1OUVJub0c5VnpjSWtHWgpPdEh1RzE0UnJxcWdGWDdTMGpDdzJRU0hKbnhDN2pEUHVmdVRYNTJPRGxVOVZIbGR4KzdEKzlnaDl3WEZJaEwrCjNkUm5HYnZBSGcwRWxKMmpvS1UrK2ZVbi9VeURPMjNRVno5RgotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==

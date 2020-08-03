@@ -2,6 +2,8 @@ package main
 
 import (
 	"crypto/tls"
+	"fmt"
+	"github.com/spf13/cobra"
 	"net/http"
 
 	config2 "sigs.k8s.io/controller-runtime/pkg/client/config"
@@ -12,12 +14,27 @@ import (
 	"github.com/My-pleasure/oam-crd-migration/converter"
 )
 
-// TODO：Allow port, cert and other information to be passed in as parameters
-//var ConversionWebhookArgs = &cobra.Command{
-//	Use: "crd-conversion-webhook",
-//	Args: cobra.MaximumNArgs(0),
-//	Run: main,
-//}
+var (
+	certFile string
+	keyFile  string
+	port     int
+)
+
+var ConversionWebhookArgs = &cobra.Command{
+	Use:  "crd-conversion-webhook",
+	Args: cobra.MaximumNArgs(0),
+	Run:  transferArgs,
+}
+
+func init() {
+	ConversionWebhookArgs.Flags().StringVar(&certFile, "tls-cert-file", "",
+		"File containing the default x509 Certificate for HTTPS. (CA cert, if any, concatenated "+
+			"after server cert.")
+	ConversionWebhookArgs.Flags().StringVar(&keyFile, "tls-private-key-file", "",
+		"File containing the default x509 private key matching --tls-cert-file.")
+	ConversionWebhookArgs.Flags().IntVar(&port, "port", 443,
+		"Secure port that the webhook listens on")
+}
 
 // Config contains the server (the webhook) cert and key.
 type Config struct {
@@ -26,14 +43,17 @@ type Config struct {
 }
 
 func main() {
-	// These default values are temporarily
-	config := Config{CertFile: "/etc/webhook/cert/tls.crt", KeyFile: "/etc/webhook/cert/tls.key"}
+	ConversionWebhookArgs.Execute()
+}
+
+func transferArgs(cmd *cobra.Command, args []string) {
+	config := Config{CertFile: certFile, KeyFile: keyFile}
 
 	http.HandleFunc("/exampleconvert", converter.ServeExampleConvert)
 	http.HandleFunc("/readyz", func(w http.ResponseWriter, req *http.Request) { w.Write([]byte("ok")) })
 	clientset := getClient()
 	server := &http.Server{
-		Addr:      ":9443",
+		Addr:      fmt.Sprintf(":%d", port),
 		TLSConfig: configTLS(config, clientset),
 	}
 	err := server.ListenAndServeTLS("", "")

@@ -2,17 +2,11 @@
 A tool to help you migrate OAM CRDs from v1alpha1 to v1alpha2
 
 # To do
-- [ ] crd conversion webhook
-- [ ] storage version migrator, like [vmware/crd-migration-tool](https://github.com/vmware/crd-migration-tool)
+- [ ] [crd conversion webhook](https://github.com/kubernetes/kubernetes/tree/master/test/images/agnhost)
+- [ ] [storage version migrator](https://github.com/kubernetes-sigs/kube-storage-version-migrator)
 
-The official demo: https://github.com/kubernetes/kubernetes/tree/master/test/images/agnhost, https://github.com/kubernetes-sigs/kube-storage-version-migrator
+# User guide
 
-# In process
-- [ ] write a sample conversion webhook framework based on offical demo
-- [ ] write a Dockerfile
-- [ ] write deployment.yaml and service.yaml to deploy the webhook
-- [ ] write a demo to test if the conversion webhook is working
-- [ ] write a user guide
 
 # The migration process (simple)
 1. Generate certificate and secret. And deploy crd conversion webhook.
