@@ -50,7 +50,7 @@ func transferArgs(cmd *cobra.Command, args []string) {
 	config := Config{CertFile: certFile, KeyFile: keyFile}
 
 	http.HandleFunc("/exampleconvert", converter.ServeExampleConvert)
-	http.HandleFunc("/readyz", func(w http.ResponseWriter, req *http.Request) { w.Write([]byte("ok")) })
+	http.HandleFunc("/appconfigconvert", converter.ServeAppConfigConvert)
 	clientset := getClient()
 	server := &http.Server{
 		Addr:      fmt.Sprintf(":%d", port),

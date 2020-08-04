@@ -61,3 +61,35 @@ func convertExampleCRD(Object *unstructured.Unstructured, toVersion string) (*un
 	}
 	return convertedObject, statusSucceed()
 }
+
+func convertAppConfigCRD(Object *unstructured.Unstructured, toVersion string) (*unstructured.Unstructured, metav1.Status) {
+	klog.V(2).Info("converting crd")
+
+	convertedObject := Object.DeepCopy()
+	fromVersion := Object.GetAPIVersion()
+
+	if toVersion == fromVersion {
+		return nil, statusErrorWithMessage("conversion from a version to itself should not call the webhook: %s", toVersion)
+	}
+
+	switch Object.GetAPIVersion() {
+	case "core.oam.dev/v1alpha1":
+		switch toVersion {
+		case "core.oam.dev/v1alpha2":
+			// TODO:
+		default:
+			return nil, statusErrorWithMessage("unexpected conversion version %q", toVersion)
+		}
+	case "core.oam.dev/v1alpha2":
+		switch toVersion {
+		case "core.oam.dev/v1alpha1":
+			// TODO:
+		default:
+			return nil, statusErrorWithMessage("unexpected conversion version %q", toVersion)
+		}
+	default:
+		return nil, statusErrorWithMessage("unexpected conversion version %q", fromVersion)
+	}
+
+	return convertedObject, statusSucceed()
+}

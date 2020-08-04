@@ -231,3 +231,8 @@ func getOutputSerializer(accept string) runtime.Serializer {
 func ServeExampleConvert(w http.ResponseWriter, r *http.Request) {
 	serve(w, r, convertExampleCRD)
 }
+
+// ServeAppConfigConvert
+func ServeAppConfigConvert(w http.ResponseWriter, r *http.Request) {
+	serve(w, r, convertAppConfigCRD)
+}

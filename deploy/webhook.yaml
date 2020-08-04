@@ -30,7 +30,7 @@ spec:
         oam: crd-conversion
     spec:
       containers:
-        - image: example:v0.4
+        - image: example:v0.1
           name: convert
           args:
             - --tls-cert-file=/etc/webhook/cert/tls.crt
