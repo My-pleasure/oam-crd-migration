@@ -14,6 +14,18 @@ kubectl kustomize ./crd/bases/ | kubectl apply -f -
 kubectl apply -f example/example-instance.yaml
 ```
 ## The conversion process
+- Create secret for ssl certificates
+```
+curl -sfL https://raw.githubusercontent.com/crossplane/oam-kubernetes-runtime/master/hack/ssl/ssl.sh | bash -s crd-conversion-webhook default
+
+kubectl create secret generic webhook-server-cert --from-file=tls.key=./crd-conversion-webhook.key --from-file=tls.crt=./crd-conversion-webhook.pem
+```
+- Create CA Bundle info and inject into the CRD definition
+```
+caValue=`kubectl config view --raw --minify --flatten -o jsonpath='{.clusters[].cluster.certificate-authority-data}'`
+
+sed -i 's/${CA_BUNDLE}/'"$caValue"'/g' ./crd/patches/crd_conversion_examples.yaml
+```
 - Build image
 ```
 docker build -t example:v0.1 .

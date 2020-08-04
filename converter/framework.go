@@ -232,7 +232,7 @@ func ServeExampleConvert(w http.ResponseWriter, r *http.Request) {
 	serve(w, r, convertExampleCRD)
 }
 
-// ServeAppConfigConvert
+// ServeAppConfigConvert servers endpoint for the appconfig converter defined as convertAppConfigCRD function.
 func ServeAppConfigConvert(w http.ResponseWriter, r *http.Request) {
 	serve(w, r, convertAppConfigCRD)
 }
