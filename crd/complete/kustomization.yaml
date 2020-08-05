@@ -1,0 +1,5 @@
+bases:
+  - ../bases
+
+patches:
+  - crd_conversion_examples_completed.yaml
