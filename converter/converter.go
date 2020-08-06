@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"k8s.io/klog"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/klog"
 )
 
 func convertExampleCRD(Object *unstructured.Unstructured, toVersion string) (*unstructured.Unstructured, metav1.Status) {
@@ -76,13 +75,6 @@ func convertAppConfigCRD(Object *unstructured.Unstructured, toVersion string) (*
 	case "core.oam.dev/v1alpha1":
 		switch toVersion {
 		case "core.oam.dev/v1alpha2":
-			// TODO:
-		default:
-			return nil, statusErrorWithMessage("unexpected conversion version %q", toVersion)
-		}
-	case "core.oam.dev/v1alpha2":
-		switch toVersion {
-		case "core.oam.dev/v1alpha1":
 			// TODO:
 		default:
 			return nil, statusErrorWithMessage("unexpected conversion version %q", toVersion)

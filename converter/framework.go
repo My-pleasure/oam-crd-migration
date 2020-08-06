@@ -51,6 +51,7 @@ func doConversionV1beta1(convertRequest *v1beta1.ConversionRequest, convert conv
 				},
 			}
 		}
+		klog.Info("get storage object successfully, its version:", cr.GetAPIVersion(), ", its name:", cr.GetName())
 		convertedCR, status := convert(&cr, convertRequest.DesiredAPIVersion)
 		if status.Status != metav1.StatusSuccess {
 			klog.Error(status.String())
@@ -59,6 +60,7 @@ func doConversionV1beta1(convertRequest *v1beta1.ConversionRequest, convert conv
 			}
 		}
 		convertedCR.SetAPIVersion(convertRequest.DesiredAPIVersion)
+		klog.Info("conversion completed, current version:", convertedCR.GetAPIVersion(), ", its name:", convertedCR.GetName(), "\n")
 		convertedObjects = append(convertedObjects, runtime.RawExtension{Object: convertedCR})
 	}
 	return &v1beta1.ConversionResponse{
@@ -82,6 +84,7 @@ func doConversionV1(convertRequest *v1.ConversionRequest, convert convertFunc) *
 				},
 			}
 		}
+		klog.Info("get storage object successfully, its version:", cr.GetAPIVersion(), ", its name:", cr.GetName())
 		convertedCR, status := convert(&cr, convertRequest.DesiredAPIVersion)
 		if status.Status != metav1.StatusSuccess {
 			klog.Error(status.String())
@@ -90,6 +93,7 @@ func doConversionV1(convertRequest *v1.ConversionRequest, convert convertFunc) *
 			}
 		}
 		convertedCR.SetAPIVersion(convertRequest.DesiredAPIVersion)
+		klog.Info("conversion completed, current version:", convertedCR.GetAPIVersion(), ", its name:", convertedCR.GetName(), "\n")
 		convertedObjects = append(convertedObjects, runtime.RawExtension{Object: convertedCR})
 	}
 	return &v1.ConversionResponse{

@@ -1,20 +1,10 @@
-# oam-crd-migration
-A tool to help you migrate OAM CRDs from v1alpha1 to v1alpha2.
-
-More details see [this](https://github.com/crossplane/oam-kubernetes-runtime/issues/108).
-
-# To do
-- [x] [crd conversion webhook](https://github.com/kubernetes/kubernetes/tree/master/test/images/agnhost)
-- [x] [storage version migrator](https://github.com/kubernetes-sigs/kube-storage-version-migrator)
-- [x] [a golang script](https://github.com/elastic/cloud-on-k8s/issues/2196) to remove old versions from CRD `status.storedVersions`
-
 # User guide for examples
 ## Pre-requisites
 - Clusters with old versions of CRD
     ```
-    kubectl kustomize ./crd/bases/ | kubectl apply -f -
+    kubectl kustomize ./sample/bases/ | kubectl apply -f -
     
-    kubectl apply -f crd/appconfig_v1alpha1_example.yaml
+    kubectl apply -f sample/example-instance.yaml
     ```
 ## The conversion process
 - Create secret for ssl certificates
@@ -37,9 +27,7 @@ More details see [this](https://github.com/crossplane/oam-kubernetes-runtime/iss
     ```
 - Patch new versions and conversion strategy to CRD
     ```
-    kubectl get crd applicationconfigurations.core.oam.dev -o yaml >> ./crd/patches/temp.yaml
-  
-    kubectl kustomize ./crd/patches | kubectl apply -f -
+    kubectl kustomize ./sample/patches | kubectl apply -f -
     ```
 - Verify that the old and new version objects are available
     ```
