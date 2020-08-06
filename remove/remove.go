@@ -26,6 +26,7 @@ func main() {
 	exitOnErr(err)
 
 	updateStatus(client, ctx, "examples.core.oam.dev")
+	updateStatus(client, ctx, "applicationconfigurations.core.oam.dev")
 }
 
 // updateStatus remove v1alpha1 from CRD status

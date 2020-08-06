@@ -17,7 +17,7 @@
     ```
     caValue=`kubectl config view --raw --minify --flatten -o jsonpath='{.clusters[].cluster.certificate-authority-data}'`
     
-    sed -i 's/${CA_BUNDLE}/'"$caValue"'/g' ./crd/patches/crd_conversion_examples.yaml
+    sed -i 's/${CA_BUNDLE}/'"$caValue"'/g' ./sample/patches/crd_conversion_examples.yaml
     ```
 - Build image and deploy a deployment and a service for webhook
     ```

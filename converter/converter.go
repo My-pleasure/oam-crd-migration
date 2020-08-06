@@ -9,7 +9,7 @@ import (
 	"k8s.io/klog"
 )
 
-func convertExampleCRD(Object *unstructured.Unstructured, toVersion string) (*unstructured.Unstructured, metav1.Status) {
+func (c *OAMConverts) ConvertExampleCRD(Object *unstructured.Unstructured, toVersion string) (*unstructured.Unstructured, metav1.Status) {
 	klog.V(2).Info("converting crd")
 
 	convertedObject := Object.DeepCopy()
@@ -61,7 +61,7 @@ func convertExampleCRD(Object *unstructured.Unstructured, toVersion string) (*un
 	return convertedObject, statusSucceed()
 }
 
-func convertAppConfigCRD(Object *unstructured.Unstructured, toVersion string) (*unstructured.Unstructured, metav1.Status) {
+func (c *OAMConverts) ConvertAppConfigCRD(Object *unstructured.Unstructured, toVersion string) (*unstructured.Unstructured, metav1.Status) {
 	klog.V(2).Info("converting crd")
 
 	convertedObject := Object.DeepCopy()
@@ -75,7 +75,8 @@ func convertAppConfigCRD(Object *unstructured.Unstructured, toVersion string) (*
 	case "core.oam.dev/v1alpha1":
 		switch toVersion {
 		case "core.oam.dev/v1alpha2":
-			// TODO:
+			// There is the incomplete conversion logic. So the v1alpha2 object will lose some field values.
+			delete(convertedObject.Object, "spec.components[0].instanceName")
 		default:
 			return nil, statusErrorWithMessage("unexpected conversion version %q", toVersion)
 		}

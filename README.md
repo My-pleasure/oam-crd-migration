@@ -8,7 +8,7 @@ More details see [this](https://github.com/crossplane/oam-kubernetes-runtime/iss
 - [x] [storage version migrator](https://github.com/kubernetes-sigs/kube-storage-version-migrator)
 - [x] [a golang script](https://github.com/elastic/cloud-on-k8s/issues/2196) to remove old versions from CRD `status.storedVersions`
 
-# User guide for examples
+# User guide for appconfig examples
 ## Pre-requisites
 - Clusters with old versions of CRD
     ```
@@ -43,30 +43,23 @@ More details see [this](https://github.com/crossplane/oam-kubernetes-runtime/iss
     ```
 - Verify that the old and new version objects are available
     ```
-    # kubectl describe ex example-test
+    # kubectl describe applicationconfigurations complete-app
     
-    Name:         example-test
+    Name:         complete-app
     Namespace:    default
     Labels:       <none>
-    Annotations:  kubectl.kubernetes.io/last-applied-configuration:
-                    {"apiVersion":"core.oam.dev/v1alpha1","hostPort":"localhost:1234","kind":"Example","metadata":{"annotations":{},"name":"example-test","nam...
-    API Version:  core.oam.dev/v1alpha2
-    Host:         localhost
-    Kind:         Example
+    Annotations:  API Version:  core.oam.dev/v1alpha2
+    Kind:         ApplicationConfiguration
     ...
-    Port:                1234
-    Events:              <none>
     
-    # kubectl describe ex.v1alpha1.core.oam.dev example-test
+    # kubectl describe applicationconfigurations.v1alpha1.core.oam.dev complete-app
     
-    Name:         example-test
+    Name:         complete-app
     Namespace:    default
     Labels:       <none>
-    Annotations:  kubectl.kubernetes.io/last-applied-configuration:
-                    {"apiVersion":"core.oam.dev/v1alpha1","hostPort":"localhost:1234","kind":"Example","metadata":{"annotations":{},"name":"example-test","nam...
-    API Version:  core.oam.dev/v1alpha1
-    Host Port:    localhost:1234
-    Kind:         Example
+    Annotations:  API Version:  core.oam.dev/v1alpha1
+    Kind:         ApplicationConfiguration
+    ...
     ```
 ## Update existing objects
 - Run the storage Version migrator

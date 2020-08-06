@@ -60,7 +60,7 @@ func doConversionV1beta1(convertRequest *v1beta1.ConversionRequest, convert conv
 			}
 		}
 		convertedCR.SetAPIVersion(convertRequest.DesiredAPIVersion)
-		klog.Info("conversion completed, current version:", convertedCR.GetAPIVersion(), ", its name:", convertedCR.GetName(), "\n")
+		klog.Info("conversion completed, current version:", convertedCR.GetAPIVersion(), ", its name:", convertedCR.GetName())
 		convertedObjects = append(convertedObjects, runtime.RawExtension{Object: convertedCR})
 	}
 	return &v1beta1.ConversionResponse{
@@ -93,7 +93,7 @@ func doConversionV1(convertRequest *v1.ConversionRequest, convert convertFunc) *
 			}
 		}
 		convertedCR.SetAPIVersion(convertRequest.DesiredAPIVersion)
-		klog.Info("conversion completed, current version:", convertedCR.GetAPIVersion(), ", its name:", convertedCR.GetName(), "\n")
+		klog.Info("conversion completed, current version:", convertedCR.GetAPIVersion(), ", its name:", convertedCR.GetName())
 		convertedObjects = append(convertedObjects, runtime.RawExtension{Object: convertedCR})
 	}
 	return &v1.ConversionResponse{
@@ -233,10 +233,12 @@ func getOutputSerializer(accept string) runtime.Serializer {
 
 // ServeExampleConvert servers endpoint for the example converter defined as convertExampleCRD function.
 func ServeExampleConvert(w http.ResponseWriter, r *http.Request) {
-	serve(w, r, convertExampleCRD)
+	oam := OAMConverts{}
+	serve(w, r, oam.ConvertExampleCRD)
 }
 
 // ServeAppConfigConvert servers endpoint for the appconfig converter defined as convertAppConfigCRD function.
 func ServeAppConfigConvert(w http.ResponseWriter, r *http.Request) {
-	serve(w, r, convertAppConfigCRD)
+	oam := OAMConverts{}
+	serve(w, r, oam.ConvertAppConfigCRD)
 }
