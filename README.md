@@ -9,6 +9,7 @@ More details see [this](https://github.com/crossplane/oam-kubernetes-runtime/iss
 - [x] [a golang script](https://github.com/elastic/cloud-on-k8s/issues/2196) to remove old versions from CRD `status.storedVersions`
 
 # User guide for appconfig examples
+This guide is for appconfig CRD version migration proess, but it is not complete. You can refer to the [document](./sample/README.md) for another demo.
 ## Pre-requisites
 - Clusters with old versions of CRD
     ```
@@ -41,7 +42,7 @@ More details see [this](https://github.com/crossplane/oam-kubernetes-runtime/iss
   
     kubectl kustomize ./crd/patches | kubectl apply -f -
     ```
-- Verify that the old and new version objects are available
+- Verify that the old and new version objects are available (only APIVersion has been converted)
     ```
     # kubectl describe applicationconfigurations complete-app
     
@@ -60,48 +61,4 @@ More details see [this](https://github.com/crossplane/oam-kubernetes-runtime/iss
     Annotations:  API Version:  core.oam.dev/v1alpha1
     Kind:         ApplicationConfiguration
     ...
-    ```
-## Update existing objects
-- Run the storage Version migrator
-    ```
-    git clone https://github.com/kubernetes-sigs/kube-storage-version-migrator
-  
-    sed -i 's/kube-system/default/g' ./Makefile
-  
-    make local-manifests
-  
-    sed -i '1,5d' ./manifests.local/namespace-rbac.yaml
-  
-    pushd manifests.local && kubectl apply -k ./ && popd
-    ```
-- Verify the migration is "SUCCEEDED"
-    ```
-    kubectl get storageversionmigrations -o=custom-columns=NAME:.spec.resource.resource,STATUS:.status.conditions[0].type
-  
-    NAME                     STATUS
-    ...                      ...
-    examples                 Succeeded
-    ...                      ...
-    ```
-## Remove old versions
-- Run the golang script that removes old versions from CRD `status.storedVersions` field
-    ```
-    go run remove/remove.go
-  
-    updated examples.core.oam.dev CRD status storedVersions: [v1alpha2]
-    ```
-- Verify the script runs successfully
-    ```
-    kubectl describe crd examples.core.oam.dev
-  
-    Name:         examples.core.oam.dev
-    Namespace:    
-    ...
-      Stored Versions:
-        v1alpha2
-    Events:  <none>
-    ```
-- Remove the old version from the CustomResourceDefinition spec.versions list
-    ```
-    kubectl kustomize ./sample/complete | kubectl apply -f -
     ```
