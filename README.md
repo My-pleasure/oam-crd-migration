@@ -106,7 +106,7 @@ This guide is for appconfig CRD version migration proess, but it is not complete
   
     NAME                       STATUS
     ...                        ...
-    applicationconfigurations  Running
+    applicationconfigurations  SUCCEEDED
     ...                        ...
     ```
 ## Remove old versions
