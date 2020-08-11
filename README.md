@@ -87,7 +87,7 @@ This guide is for appconfig CRD version migration proess, but it is not complete
           Name:   auto
           Value:  true
     ```
-## Update existing objects (not completed yet)
+## Update existing objects
 - Run the storage Version migrator
     ```
     git clone https://github.com/kubernetes-sigs/kube-storage-version-migrator
