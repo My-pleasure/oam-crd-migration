@@ -160,7 +160,12 @@ func (c *OAMConverts) ConvertAppConfigCRD(Object *unstructured.Unstructured, toV
 			return nil, statusErrorWithMessage("unexpected conversion version %q", toVersion)
 		}
 	case "core.oam.dev/v1alpha2":
-		return convertedObject, statusSucceed()
+		switch toVersion {
+		case "core.oam.dev/v1alpha1":
+			// TODO
+		default:
+			return nil, statusErrorWithMessage("unexpected conversion version %q", toVersion)
+		}
 	default:
 		return nil, statusErrorWithMessage("unexpected conversion version %q", fromVersion)
 	}

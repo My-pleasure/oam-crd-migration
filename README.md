@@ -20,9 +20,9 @@ This guide is for appconfig CRD version migration proess, but it is not complete
 ## The conversion process
 - Create secret for ssl certificates
     ```
-    curl -sfL https://raw.githubusercontent.com/crossplane/oam-kubernetes-runtime/master/hack/ssl/ssl.sh | bash -s crd-conversion-webhook default
+    curl -sfL https://raw.githubusercontent.com/crossplane/oam-kubernetes-runtime/master/hack/ssl/ssl.sh | bash -s oam-crd-conversion default
     
-    kubectl create secret generic webhook-server-cert --from-file=tls.key=./crd-conversion-webhook.key --from-file=tls.crt=./crd-conversion-webhook.pem
+    kubectl create secret generic webhook-server-cert --from-file=tls.key=./oam-crd-conversion.key --from-file=tls.crt=./oam-crd-conversion.pem
     ```
 - Create CA Bundle info and inject into the CRD definition
     ```
