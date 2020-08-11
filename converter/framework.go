@@ -52,6 +52,12 @@ func doConversionV1beta1(convertRequest *v1beta1.ConversionRequest, convert conv
 			}
 		}
 		klog.Info("get storage object successfully, its version:", cr.GetAPIVersion(), ", its name:", cr.GetName())
+		if cr.GetAPIVersion() == "core.oam.dev/v1alpha2" {
+			return &v1beta1.ConversionResponse{
+				ConvertedObjects: convertedObjects,
+				Result:           statusSucceed(),
+			}
+		}
 		convertedCR, status := convert(&cr, convertRequest.DesiredAPIVersion)
 		if status.Status != metav1.StatusSuccess {
 			klog.Error(status.String())

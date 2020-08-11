@@ -28,7 +28,7 @@ This guide is for appconfig CRD version migration proess, but it is not complete
     ```
     caValue=`kubectl config view --raw --minify --flatten -o jsonpath='{.clusters[].cluster.certificate-authority-data}'`
     
-    sed -i 's/${CA_BUNDLE}/'"$caValue"'/g' ./crd/patches/crd_conversion_examples.yaml
+    sed -i 's/${CA_BUNDLE}/'"$caValue"'/g' ./crd/patches/crd_conversion_applicationconfigurations.yaml
     ```
 - Build image and deploy a deployment and a service for webhook
     ```
@@ -42,7 +42,7 @@ This guide is for appconfig CRD version migration proess, but it is not complete
   
     kubectl kustomize ./crd/patches | kubectl apply -f -
     ```
-- Verify that the old and new version objects are available (only APIVersion has been converted)
+- Verify that the old and new version objects are available
     ```
     # kubectl describe applicationconfigurations complete-app
     
@@ -52,6 +52,18 @@ This guide is for appconfig CRD version migration proess, but it is not complete
     Annotations:  API Version:  core.oam.dev/v1alpha2
     Kind:         ApplicationConfiguration
     ...
+      Traits:
+        Trait:
+          API Version:  core.oam.dev/v1alpha2
+          Kind:         RollOutTrait
+          Metadata:
+            Name:  rollout
+          Spec:
+            Auto:               true
+            Batch Interval:     5
+            Batches:            2
+            Canary Replicas:    0
+            Instance Interval:  1
     
     # kubectl describe applicationconfigurations.v1alpha1.core.oam.dev complete-app
     
@@ -61,4 +73,63 @@ This guide is for appconfig CRD version migration proess, but it is not complete
     Annotations:  API Version:  core.oam.dev/v1alpha1
     Kind:         ApplicationConfiguration
     ...
+      Traits:
+        Name:  rollout
+        Properties:
+          Name:   canaryReplicas
+          Value:  0
+          Name:   batches
+          Value:  2
+          Name:   batchInterval
+          Value:  5
+          Name:   instanceInterval
+          Value:  1
+          Name:   auto
+          Value:  true
+    ```
+## Update existing objects (not completed yet)
+- Run the storage Version migrator
+    ```
+    git clone https://github.com/kubernetes-sigs/kube-storage-version-migrator
+  
+    sed -i 's/kube-system/default/g' ./Makefile
+  
+    make local-manifests
+  
+    sed -i '1,5d' ./manifests.local/namespace-rbac.yaml
+  
+    pushd manifests.local && kubectl apply -k ./ && popd
+    ```
+- Verify the migration is "SUCCEEDED"
+    ```
+    kubectl get storageversionmigrations -o=custom-columns=NAME:.spec.resource.resource,STATUS:.status.conditions[0].type
+  
+    NAME                       STATUS
+    ...                        ...
+    applicationconfigurations  Running
+    ...                        ...
+    ```
+## Remove old versions
+- Run the golang script that removes old versions from CRD `status.storedVersions` field
+    ```
+    go run remove/remove.go
+  
+    updated applicationconfigurations.core.oam.dev CRD status storedVersions: [v1alpha2]
+    ```
+- Verify the script runs successfully
+    ```
+    kubectl describe crd applicationconfigurations.core.oam.dev
+  
+    Name:         applicationconfigurations.core.oam.dev
+    Namespace:    
+    ...
+      Stored Versions:
+        v1alpha2
+    Events:  <none>
+    ```
+- Remove the old version from the CustomResourceDefinition spec.versions list
+    ```
+    kubectl get crd applicationconfigurations.core.oam.dev -o yaml >> ./crd/complete/temp.yaml
+  
+    kubectl kustomize ./crd/complete | kubectl apply -f -
     ```

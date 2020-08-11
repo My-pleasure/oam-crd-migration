@@ -3,8 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
-
 	apiextension "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
@@ -14,7 +12,7 @@ import (
 func exitOnErr(err error) {
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		return
 	}
 }
 
