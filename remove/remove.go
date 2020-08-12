@@ -9,19 +9,15 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 )
 
-func exitOnErr(err error) {
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-}
-
 func main() {
 	//  create k8s client
 	ctx := context.Background()
 	cfg, err := config.GetConfig()
 	client, err := apiextension.NewForConfig(cfg)
-	exitOnErr(err)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	updateStatus(client, ctx, "examples.core.oam.dev")
 	updateStatus(client, ctx, "applicationconfigurations.core.oam.dev")
@@ -31,7 +27,10 @@ func main() {
 func updateStatus(client *apiextension.Clientset, ctx context.Context, gvk string) {
 	// retrieve CRD
 	crd, err := client.ApiextensionsV1().CustomResourceDefinitions().Get(ctx, gvk, v1.GetOptions{})
-	exitOnErr(err)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	// remove v1alpha1 from its status
 	oldStoredVersions := crd.Status.StoredVersions
 	newStoredVersions := make([]string, 0, len(oldStoredVersions))
@@ -43,6 +42,9 @@ func updateStatus(client *apiextension.Clientset, ctx context.Context, gvk strin
 	crd.Status.StoredVersions = newStoredVersions
 	// update the status sub-resource
 	crd, err = client.ApiextensionsV1().CustomResourceDefinitions().UpdateStatus(ctx, crd, v1.UpdateOptions{})
-	exitOnErr(err)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	fmt.Println("updated", gvk, "CRD status storedVersions:", crd.Status.StoredVersions)
 }

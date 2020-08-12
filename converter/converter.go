@@ -74,7 +74,7 @@ func (c *OAMConverts) ConvertExampleCRD(Object *unstructured.Unstructured, toVer
 	return convertedObject, statusSucceed()
 }
 
-func (c *OAMConverts) ConvertAppConfigCRD(Object *unstructured.Unstructured, toVersion string) (*unstructured.Unstructured, metav1.Status) {
+func (c *OAMConverts) ConvertAppConfig(Object *unstructured.Unstructured, toVersion string) (*unstructured.Unstructured, metav1.Status) {
 	klog.V(2).Info("converting crd")
 
 	convertedObject := Object.DeepCopy()

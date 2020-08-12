@@ -240,5 +240,5 @@ func ServeExampleConvert(w http.ResponseWriter, r *http.Request) {
 // ServeAppConfigConvert servers endpoint for the appconfig converter defined as convertAppConfigCRD function.
 func ServeAppConfigConvert(w http.ResponseWriter, r *http.Request) {
 	oam := OAMConverts{}
-	serve(w, r, oam.ConvertAppConfigCRD)
+	serve(w, r, oam.ConvertAppConfig)
 }
