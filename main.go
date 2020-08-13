@@ -3,15 +3,14 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/spf13/cobra"
 	"net/http"
 
-	config2 "sigs.k8s.io/controller-runtime/pkg/client/config"
-
-	"k8s.io/client-go/kubernetes"
 	"k8s.io/klog"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/client/config"
 
 	"github.com/My-pleasure/oam-crd-migration/converter"
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -63,19 +62,19 @@ func transferArgs(cmd *cobra.Command, args []string) {
 }
 
 // Get a clientset with in-cluster config.
-func getClient() *kubernetes.Clientset {
-	config, err := config2.GetConfig()
+func getClient() *client.Client {
+	config, err := config.GetConfig()
 	if err != nil {
 		klog.Fatal(err)
 	}
-	clientset, err := kubernetes.NewForConfig(config)
+	clientset, err := client.New(config, client.Options{})
 	if err != nil {
 		klog.Fatal(err)
 	}
-	return clientset
+	return &clientset
 }
 
-func configTLS(config Config, clientset *kubernetes.Clientset) *tls.Config {
+func configTLS(config Config, clientset *client.Client) *tls.Config {
 	sCert, err := tls.LoadX509KeyPair(config.CertFile, config.KeyFile)
 	if err != nil {
 		klog.Fatal(err)

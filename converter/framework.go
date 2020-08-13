@@ -233,12 +233,10 @@ func getOutputSerializer(accept string) runtime.Serializer {
 
 // ServeExampleConvert servers endpoint for the example converter defined as convertExampleCRD function.
 func ServeExampleConvert(w http.ResponseWriter, r *http.Request) {
-	oam := OAMConverts{}
-	serve(w, r, oam.ConvertExampleCRD)
+	serve(w, r, ConvertExampleCRD)
 }
 
 // ServeAppConfigConvert servers endpoint for the appconfig converter defined as convertAppConfigCRD function.
 func ServeAppConfigConvert(w http.ResponseWriter, r *http.Request) {
-	oam := OAMConverts{}
-	serve(w, r, oam.ConvertAppConfig)
+	serve(w, r, ConvertAppConfig)
 }
