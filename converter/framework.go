@@ -6,10 +6,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/munnerz/goautoneg"
-
-	"k8s.io/klog"
-
 	v1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -17,6 +13,9 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer/json"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
+	"k8s.io/klog"
+
+	"github.com/munnerz/goautoneg"
 )
 
 // convertFunc is the user defined function for any conversion. The code in this file is a
@@ -229,11 +228,6 @@ func getOutputSerializer(accept string) runtime.Serializer {
 	}
 
 	return nil
-}
-
-// ServeExampleConvert servers endpoint for the example converter defined as convertExampleCRD function.
-func ServeExampleConvert(w http.ResponseWriter, r *http.Request) {
-	serve(w, r, ConvertExampleCRD)
 }
 
 // ServeAppConfigConvert servers endpoint for the appconfig converter defined as convertAppConfigCRD function.

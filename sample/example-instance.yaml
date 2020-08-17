@@ -1,5 +1,0 @@
-apiVersion: core.oam.dev/v1alpha1
-kind: Example
-metadata:
-  name: example-test
-hostPort: "localhost:1234"

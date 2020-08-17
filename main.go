@@ -5,12 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"k8s.io/klog"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/client/config"
-
 	"github.com/My-pleasure/oam-crd-migration/converter"
 	"github.com/spf13/cobra"
+	"k8s.io/klog"
 )
 
 var (
@@ -48,12 +45,10 @@ func main() {
 func transferArgs(cmd *cobra.Command, args []string) {
 	config := Config{CertFile: certFile, KeyFile: keyFile}
 
-	http.HandleFunc("/exampleconvert", converter.ServeExampleConvert)
 	http.HandleFunc("/appconfigconvert", converter.ServeAppConfigConvert)
-	clientset := getClient()
 	server := &http.Server{
 		Addr:      fmt.Sprintf(":%d", port),
-		TLSConfig: configTLS(config, clientset),
+		TLSConfig: configTLS(config),
 	}
 	err := server.ListenAndServeTLS("", "")
 	if err != nil {
@@ -61,20 +56,7 @@ func transferArgs(cmd *cobra.Command, args []string) {
 	}
 }
 
-// Get a clientset with in-cluster config.
-func getClient() *client.Client {
-	config, err := config.GetConfig()
-	if err != nil {
-		klog.Fatal(err)
-	}
-	clientset, err := client.New(config, client.Options{})
-	if err != nil {
-		klog.Fatal(err)
-	}
-	return &clientset
-}
-
-func configTLS(config Config, clientset *client.Client) *tls.Config {
+func configTLS(config Config) *tls.Config {
 	sCert, err := tls.LoadX509KeyPair(config.CertFile, config.KeyFile)
 	if err != nil {
 		klog.Fatal(err)

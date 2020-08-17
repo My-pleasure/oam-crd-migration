@@ -9,7 +9,6 @@ More details see [this](https://github.com/crossplane/oam-kubernetes-runtime/iss
 - [x] [a golang script](https://github.com/elastic/cloud-on-k8s/issues/2196) to remove old versions from CRD `status.storedVersions`
 
 # User guide for appconfig examples
-This guide is for appconfig CRD version migration proess, but it is not complete. You can refer to the [document](./sample/README.md) for another demo.
 ## Pre-requisites
 - Clusters with old versions of CRD
     ```
@@ -88,6 +87,7 @@ This guide is for appconfig CRD version migration proess, but it is not complete
           Value:  true
     ```
 ## Update existing objects
+Here we use kube-storage-version-migrator as an example, you can write Go scripts instead.
 - Run the storage Version migrator
     ```
     git clone https://github.com/kubernetes-sigs/kube-storage-version-migrator
