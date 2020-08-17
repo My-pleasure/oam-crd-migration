@@ -38,14 +38,14 @@ func ConvertAppConfig(Object *unstructured.Unstructured, toVersion string) (*uns
 				traits, _, _ := unstructured.NestedSlice(c, "traits")
 
 				v1alpha2Traits := make([]interface{}, 0)
-				for _, tr := range traits {
-					v1alpha2Trait, err := converterPlugin.ConvertTrait(tr)
+				for _, trait := range traits {
+					tr, err := converterPlugin.ConvertTrait(trait)
 					if err != nil {
 						return nil, statusErrorWithMessage("convert trait error: ", err)
 					}
 
 					tempTrait := make(map[string]interface{}, 0)
-					_ = unstructured.SetNestedField(tempTrait, v1alpha2Trait, "trait")
+					_ = unstructured.SetNestedField(tempTrait, map[string]interface{}(tr), "trait")
 					v1alpha2Traits = append(v1alpha2Traits, tempTrait)
 				}
 
@@ -55,7 +55,7 @@ func ConvertAppConfig(Object *unstructured.Unstructured, toVersion string) (*uns
 					return nil, statusErrorWithMessage("set component.traits error: ", err)
 				}
 
-				v1alpha2Components = append(v1alpha2Components, c)
+				v1alpha2Components = append(v1alpha2Components, map[string]interface{}(c))
 			}
 
 			unstructured.RemoveNestedField(convertedObject.Object, "spec", "components")
