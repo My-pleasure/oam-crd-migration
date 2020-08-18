@@ -8,6 +8,41 @@ More details see [this](https://github.com/crossplane/oam-kubernetes-runtime/iss
 - [x] [storage version migrator](https://github.com/kubernetes-sigs/kube-storage-version-migrator)
 - [x] [a golang script](https://github.com/elastic/cloud-on-k8s/issues/2196) to remove old versions from CRD `status.storedVersions`
 
+# For developers
+- [converter/framework.go:](converter/framework.go)
+定义了如何处理 ConversionReview 的请求与响应（Request、Response），一般不需要更改。
+- [converter/converter.go:](converter/converter.go)
+定义了针对 ApplicationConfigurations 的转换函数，此处的输入输出是 unstructured 结构的 ApplicationConfigurations，若要更改输入输入输出，则需更改 framework.go 中如下两处：
+    ```
+    #L24
+    type convertFunc func(Object *unstructured.Unstructured, version string) (*unstructured.Unstructured, metav1.Status)
+    #L74
+    func doConversionV1(convertRequest *v1.ConversionRequest, convert convertFunc) *v1.ConversionResponse {
+        var convertedObjects []runtime.RawExtension
+        for _, obj := range convertRequest.Objects {
+            cr := unstructured.Unstructured{}
+            if err := cr.UnmarshalJSON(obj.Raw); err != nil {
+                klog.Error(err)
+                return &v1beta1.ConversionResponse{
+                    Result: metav1.Status{
+                        Message: fmt.Sprintf("failed to unmarshall object (%v) with error: %v", string(obj.Raw), err),
+                        Status:  metav1.StatusFailure,
+                    },
+                }
+            }
+        ...
+    }
+    ```
+- [converter/plugin.go:](converter/plugin.go)
+添加和修改具体转换逻辑都在 plugin.go 文件中。
+此文件中定义了针对 ApplicationConfigurations 中 components 和 traits 字段转换的接口和实现的具体逻辑：
+```
+type Converter interface {
+	ConvertComponent(v1alpha1Component) (v1alpha2Component, v1alpha2.Component, error)
+	ConvertTrait(v1alpha1Trait) (v1alpha2Trait, error)
+}
+```
+
 # User guide for appconfig examples
 ## Pre-requisites
 - Clusters with old versions of CRD
