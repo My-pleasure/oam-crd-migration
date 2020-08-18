@@ -33,7 +33,7 @@ func ConvertAppConfig(Object *unstructured.Unstructured, toVersion string) (*uns
 		return nil, statusErrorWithMessage("conversion from a version to itself should not call the webhook: %s", toVersion)
 	}
 
-	converterPlugin := Plugin{}
+	converterPlugin := ExamplePlugin{}
 
 	switch Object.GetAPIVersion() {
 	case "core.oam.dev/v1alpha1":

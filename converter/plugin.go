@@ -32,13 +32,13 @@ type Converter interface {
 	ConvertTrait(v1alpha1Trait) (v1alpha2Trait, error)
 }
 
-// Plugin is conversion method receiver
-type Plugin struct {
+// ExamplePlugin is conversion method receiver
+type ExamplePlugin struct {
 }
 
 // ConvertComponent converts spec.components from v1alpha1 types to v1alpha2 types
 // in ApplicationConfigurations and return a v1alpha2 component CR.
-func (p *Plugin) ConvertComponent(comp v1alpha1Component) (v1alpha2Component, v1alpha2.Component, error) {
+func (p *ExamplePlugin) ConvertComponent(comp v1alpha1Component) (v1alpha2Component, v1alpha2.Component, error) {
 	c, _ := comp.(map[string]interface{})
 
 	var v1alpha2Comp v1alpha2.Component
@@ -70,7 +70,7 @@ func (p *Plugin) ConvertComponent(comp v1alpha1Component) (v1alpha2Component, v1
 
 // ConvertTrait converts spec.components[*].traits from v1alpha1 types to v1alpha2 types
 // in ApplicationConfigurations.
-func (p *Plugin) ConvertTrait(tr v1alpha1Trait) (v1alpha2Trait, error) {
+func (p *ExamplePlugin) ConvertTrait(tr v1alpha1Trait) (v1alpha2Trait, error) {
 	t, _ := tr.(map[string]interface{})
 	v1alpha2Trait := make(map[string]interface{}, 0)
 
