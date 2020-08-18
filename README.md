@@ -16,6 +16,10 @@ More details see [this](https://github.com/crossplane/oam-kubernetes-runtime/iss
     
     kubectl apply -f crd/appconfig_v1alpha1_example.yaml
     ```
+- Because webhook is deployed in default namespace in this demo, permissions should be assigned.
+    ```
+    kubectl apply -f crd/role-binding.yaml
+    ```
 ## The conversion process
 - Create secret for ssl certificates
     ```

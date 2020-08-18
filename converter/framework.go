@@ -15,6 +15,7 @@ import (
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/klog"
 
+	"github.com/crossplane/oam-kubernetes-runtime/apis/core"
 	"github.com/munnerz/goautoneg"
 )
 
@@ -195,6 +196,7 @@ func init() {
 func addToScheme(scheme *runtime.Scheme) {
 	utilruntime.Must(v1.AddToScheme(scheme))
 	utilruntime.Must(v1beta1.AddToScheme(scheme))
+	_ = core.AddToScheme(scheme)
 }
 
 var serializers = map[mediaType]runtime.Serializer{
@@ -230,7 +232,7 @@ func getOutputSerializer(accept string) runtime.Serializer {
 	return nil
 }
 
-// ServeAppConfigConvert servers endpoint for the appconfig converter defined as convertAppConfigCRD function.
+// ServeAppConfigConvert servers endpoint for the appconfig converter defined as convertAppConfig function.
 func ServeAppConfigConvert(w http.ResponseWriter, r *http.Request) {
 	serve(w, r, ConvertAppConfig)
 }
