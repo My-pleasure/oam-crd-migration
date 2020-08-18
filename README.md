@@ -36,12 +36,12 @@ More details see [this](https://github.com/crossplane/oam-kubernetes-runtime/iss
 - [converter/plugin.go:](converter/plugin.go)
 添加和修改具体转换逻辑都在 plugin.go 文件中。
 此文件中定义了针对 ApplicationConfigurations 中 components 和 traits 字段转换的接口和实现的具体逻辑：
-```
-type Converter interface {
-	ConvertComponent(v1alpha1Component) (v1alpha2Component, v1alpha2.Component, error)
-	ConvertTrait(v1alpha1Trait) (v1alpha2Trait, error)
-}
-```
+    ```
+    type Converter interface {
+        ConvertComponent(v1alpha1Component) (v1alpha2Component, v1alpha2.Component, error)
+        ConvertTrait(v1alpha1Trait) (v1alpha2Trait, error)
+    }
+    ```
 
 # User guide for appconfig examples
 ## Pre-requisites
