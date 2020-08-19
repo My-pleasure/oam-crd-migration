@@ -58,7 +58,7 @@ func ConvertAppConfig(Object *unstructured.Unstructured, toVersion string) (*uns
 						if err = k8sClient.Create(ctx, &compCR); err != nil {
 							klog.Info("create v1alpha2 component error: ", err)
 						}
-						klog.Info("create v1alpha2 component successfully: ", compCR)
+						klog.Info("create v1alpha2 component successfully, name: ", compCR.Name, " namespace: ", compCR.Namespace, " APIVersion: ", compCR.APIVersion)
 					}
 				}
 
