@@ -59,7 +59,7 @@ func transferArgs(cmd *cobra.Command, args []string) {
 func configTLS(config Config) *tls.Config {
 	sCert, err := tls.LoadX509KeyPair(config.CertFile, config.KeyFile)
 	if err != nil {
-		klog.Fatal(err)
+		klog.Error(err)
 	}
 	return &tls.Config{
 		Certificates: []tls.Certificate{sCert},

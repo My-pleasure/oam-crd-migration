@@ -41,7 +41,7 @@ func ConvertAppConfig(Object *unstructured.Unstructured, toVersion string) (*uns
 		case "core.oam.dev/v1alpha2":
 			components, _, err := unstructured.NestedSlice(convertedObject.Object, "spec", "components")
 			if err != nil {
-				return nil, statusErrorWithMessage("get spec.components error: ", err)
+				return nil, statusErrorWithMessage("get spec.components error: %v", err)
 			}
 
 			v1alpha2Components := make([]interface{}, 0)
@@ -49,7 +49,7 @@ func ConvertAppConfig(Object *unstructured.Unstructured, toVersion string) (*uns
 				// convert appconfig.spec.components field and return a v1alpha2 component CR
 				c, compCR, err := converterPlugin.ConvertComponent(comp)
 				if err != nil {
-					return nil, statusErrorWithMessage("convert components error: ", err)
+					return nil, statusErrorWithMessage("convert components error: %v", err)
 				}
 				// If there is no component in the cluster, apply the v1alpha2 component
 				compObject := client.ObjectKey{Name: compCR.Name, Namespace: compCR.Namespace}
@@ -69,7 +69,7 @@ func ConvertAppConfig(Object *unstructured.Unstructured, toVersion string) (*uns
 					// convert appconfig.spec.components.traits field
 					tr, err := converterPlugin.ConvertTrait(trait)
 					if err != nil {
-						return nil, statusErrorWithMessage("convert trait error: ", err)
+						return nil, statusErrorWithMessage("convert trait error: %v", err)
 					}
 
 					tempTrait := make(map[string]interface{}, 0)
@@ -81,7 +81,7 @@ func ConvertAppConfig(Object *unstructured.Unstructured, toVersion string) (*uns
 				unstructured.RemoveNestedField(c, "traits")
 				err = unstructured.SetNestedSlice(c, v1alpha2Traits, "traits")
 				if err != nil {
-					return nil, statusErrorWithMessage("set component.traits error: ", err)
+					return nil, statusErrorWithMessage("set component.traits error: %v", err)
 				}
 
 				v1alpha2Components = append(v1alpha2Components, map[string]interface{}(c))

@@ -19,7 +19,6 @@ func main() {
 		return
 	}
 
-	updateStatus(client, ctx, "examples.core.oam.dev")
 	updateStatus(client, ctx, "applicationconfigurations.core.oam.dev")
 }
 
