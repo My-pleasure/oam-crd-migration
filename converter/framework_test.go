@@ -51,17 +51,17 @@ request:
       metadata:
         name: example-appconfig
       spec:
-		components:
-		  - componentName: stateless-component
-		    instanceName: demo
-		    parameterValues:
-			  - name: description
-			    value: demo
-		    traits:
-			  - name: rollout
-			    properties:
-				  - name: test
-				    value: "0"
+        components:
+          - componentName: stateless-component
+            instanceName: demo
+            parameterValues:
+              - name: description
+                value: demo
+            traits:
+              - name: rollout
+                properties:
+                  - name: test
+                    value: "0"
 `
 	for _, tc := range cases {
 		t.Run(tc.apiVersion+" "+tc.contentType, func(t *testing.T) {
