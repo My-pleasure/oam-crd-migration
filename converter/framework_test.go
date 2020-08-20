@@ -3,8 +3,10 @@ package converter
 import (
 	"bytes"
 	"fmt"
+	"github.com/crossplane/oam-kubernetes-runtime/apis/core/v1alpha2"
 	"net/http"
 	"net/http/httptest"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"strings"
 	"testing"
 
@@ -49,10 +51,10 @@ request:
     - apiVersion: core.oam.dev/v1alpha1
       kind: ApplicationConfiguration
       metadata:
-        name: example-appconfig
+        name: test-appconfig
       spec:
         components:
-          - componentName: stateless-component
+          - componentName: test-component
             instanceName: demo
             parameterValues:
               - name: description
@@ -100,4 +102,9 @@ request:
 			}
 		})
 	}
+	// Delete unnecessary component that is generated during the test
+	testObjectKey := client.ObjectKey{Name: "test-component", Namespace: "default"}
+	var testCompCR v1alpha2.Component
+	_ = k8sClient.Get(ctx, testObjectKey, &testCompCR)
+	_ = k8sClient.Delete(ctx, &testCompCR)
 }
