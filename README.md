@@ -9,38 +9,48 @@ More details see [this](https://github.com/crossplane/oam-kubernetes-runtime/iss
 - [x] [a golang script](https://github.com/elastic/cloud-on-k8s/issues/2196) to remove old versions from CRD `status.storedVersions`
 
 # For developers
-- [converter/framework.go:](converter/framework.go)
-定义了如何处理 ConversionReview 的请求与响应（Request、Response），一般不需要更改。
-- [converter/converter.go:](converter/converter.go)
-定义了针对 ApplicationConfigurations 的转换函数，此处的输入输出是 unstructured 结构的 ApplicationConfigurations，若要更改输入输入输出，则需更改 framework.go 中如下两处：
+[converter/framework.go:](converter/framework.go)
+- server 等函数定义了如何处理 ConversionReview 的请求与响应（Request、Response），一般不需要更改。
+- convertFunc 是用户自定义的转换函数，此示例中用可处理任何 CR 的 unstructured 作为输入，用户也可自定义输入输出为具体类型的 CR。
     ```
-    #L24
     type convertFunc func(Object *unstructured.Unstructured, version string) (*unstructured.Unstructured, metav1.Status)
-    #L74
+    ```
+- 接上，若用户采用具体类型的 CR 作为 convertFunc 的输入输出，doConversionV1 和 doConversionV1beta1 函数也需修改。将 `cr` 变量类型变成用户需要的 CR。
+    ```
     func doConversionV1(convertRequest *v1.ConversionRequest, convert convertFunc) *v1.ConversionResponse {
         var convertedObjects []runtime.RawExtension
         for _, obj := range convertRequest.Objects {
             cr := unstructured.Unstructured{}
             if err := cr.UnmarshalJSON(obj.Raw); err != nil {
-                klog.Error(err)
-                return &v1beta1.ConversionResponse{
-                    Result: metav1.Status{
-                        Message: fmt.Sprintf("failed to unmarshall object (%v) with error: %v", string(obj.Raw), err),
-                        Status:  metav1.StatusFailure,
-                    },
-                }
+                ...
             }
+            klog.Info("get storage object successfully, its version:", cr.GetAPIVersion(), ", its name:", cr.GetName())
+            convertedCR, status := convert(&cr, convertRequest.DesiredAPIVersion)
         ...
-    }
     ```
-- [converter/plugin.go:](converter/plugin.go)
-添加和修改具体转换逻辑都在 plugin.go 文件中。
-此文件中定义了针对 ApplicationConfigurations 中 components 和 traits 字段转换的接口和实现的具体逻辑：
+[converter/converter.go:](converter/converter.go)
+- ConvertAppConfig 是对 convertFunc 的实现，具体转换逻辑是对 unstructured 嵌套结构的修改，用 v1alpha2 版本的新字段描述替代 v1alpha1 版本的旧字段描述。
+    ```
+    func ConvertAppConfig(Object *unstructured.Unstructured, toVersion string) (*unstructured.Unstructured, metav1.Status)
+    ```
+    
+[converter/plugin.go:](converter/plugin.go)
+- 接口定义了针对 ApplicationConfiguration 中 components 和 traits 字段的转换方法的集合。用户通过实现方法来自定义转换逻辑。
     ```
     type Converter interface {
         ConvertComponent(v1alpha1Component) (v1alpha2Component, v1alpha2.Component, error)
         ConvertTrait(v1alpha1Trait) (v1alpha2Trait, error)
     }
+    ```
+- 变量定义：因为示例中 ApplicationConfiguration 是 unstructured 结构，为了能方便获取、修改嵌套结构中的具体字段，将变量定义为 `interface{}` 或 `map[string]interface{}`。
+    ```
+    type v1alpha1Component interface{}
+    
+    type v1alpha2Component map[string]interface{}
+    
+    type v1alpha1Trait interface{}
+    
+    type v1alpha2Trait map[string]interface{}
     ```
 
 # User guide for appconfig examples
