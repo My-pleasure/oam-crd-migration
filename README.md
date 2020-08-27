@@ -10,12 +10,12 @@ More details see [this](https://github.com/crossplane/oam-kubernetes-runtime/iss
 
 # For developers
 [converter/framework.go:](converter/framework.go)
-- server 等函数定义了如何处理 ConversionReview 的请求与响应（Request、Response），一般不需要更改。
-- convertFunc 是用户自定义的转换函数，此示例中用可处理任何 CR 的 unstructured 作为输入，用户也可自定义输入输出为具体类型的 CR。
+- Functions such as `Server` define how to handle `ConversionReview` requests and responses and generally do not need to be changed.
+- `convertFunc` is the user defined function for any conversion. The code in this file is a template that can be use for any CR conversion given this function. Or users can customize the input and output to be a specific type of CR.
     ```
     type convertFunc func(Object *unstructured.Unstructured, version string) (*unstructured.Unstructured, metav1.Status)
     ```
-- 接上，若用户采用具体类型的 CR 作为 convertFunc 的输入输出，doConversionV1 和 doConversionV1beta1 函数也需修改。将 `cr` 变量类型变成用户需要的 CR。
+- The `doConversionV1` and `doConversionV1beta1` functions also need to be modified if the user uses a specific type of CR as the input/output of `convertFunc` . Change the `cr` variable type to the CR desired by the user.
     ```
     func doConversionV1(convertRequest *v1.ConversionRequest, convert convertFunc) *v1.ConversionResponse {
         var convertedObjects []runtime.RawExtension
@@ -29,20 +29,20 @@ More details see [this](https://github.com/crossplane/oam-kubernetes-runtime/iss
         ...
     ```
 [converter/converter.go:](converter/converter.go)
-- ConvertAppConfig 是对 convertFunc 的实现，具体转换逻辑是对 unstructured 嵌套结构的修改，用 v1alpha2 版本的新字段描述替代 v1alpha1 版本的旧字段描述。
+- `ConvertAppConfig` is an implementation of `convertFunc` , and the specific conversion logic is a modification of unstructured nested structure, replacing the old field description of v1alpha1 with the new field description of v1alpha2.
     ```
     func ConvertAppConfig(Object *unstructured.Unstructured, toVersion string) (*unstructured.Unstructured, metav1.Status)
     ```
     
 [converter/plugin.go:](converter/plugin.go)
-- 接口定义了针对 ApplicationConfiguration 中 components 和 traits 字段的转换方法的集合。用户通过实现方法来自定义转换逻辑。
+- The interface defines a collection of conversion methods for the `Components` and `Traits` fields in ApplicationConfiguration. Users can customize the conversion logic by implementing methods.
     ```
     type Converter interface {
         ConvertComponent(v1alpha1Component) (v1alpha2Component, v1alpha2.Component, error)
         ConvertTrait(v1alpha1Trait) (v1alpha2Trait, error)
     }
     ```
-- 变量定义：因为示例中 ApplicationConfiguration 是 unstructured 结构，为了能方便获取、修改嵌套结构中的具体字段，将变量定义为 `interface{}` 或 `map[string]interface{}`。
+- Variable definition: Because the ApplicationConfiguration in this example is an unstructured structure, variables are defined as `interface{}` or `map[string]interface{}` for the convenience of obtaining and modifying specific fields in the nested structure.
     ```
     type v1alpha1Component interface{}
     
