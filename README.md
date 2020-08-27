@@ -1,11 +1,15 @@
 # oam-crd-migration
 A tool to help you migrate OAM CRDs from v1alpha1 to v1alpha2.
 
+This migration tool is primarily a conversion webhook like admission webhook. This webhook
+handles the `ConversionReview` requests sent by the API servers, and sends back conversion
+results wrapped in `ConversionResponse` . The specific conversion logic can be customized by the
+user.
+
 More details see [this](https://github.com/crossplane/oam-kubernetes-runtime/issues/108).
 
-# To do
+# What does it include?
 - [x] [crd conversion webhook](https://github.com/kubernetes/kubernetes/tree/master/test/images/agnhost)
-- [x] [storage version migrator](https://github.com/kubernetes-sigs/kube-storage-version-migrator)
 - [x] [a golang script](https://github.com/elastic/cloud-on-k8s/issues/2196) to remove old versions from CRD `status.storedVersions`
 
 # For developers
